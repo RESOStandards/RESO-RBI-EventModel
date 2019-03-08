@@ -4,13 +4,14 @@
 ## Request for Comment 
 
 #### Submitted to RESO Distributed Ledger Worgroup by the Real Estate Blockchain Initiative
-#### Version 1.1 - December 2018
+#### Version 1.2 - March 2019
 
 ---
 
 ## Table of Contents  
 
 - [Overview](#overview)
+- [Usage](#usage)
 - [Examples](#examples)
  - [History of a home being sold](#history-of-a-home-being-sold)
  - [Construction project](#construction-project)
@@ -31,16 +32,22 @@
 
 ## Overview  
 
-An event is a record of occurrence that relects the state at a point in time.
-Events expressed with a standard approach are easier to store.  The RESO
-Distributed Ledger Event Model represents an approach that can be used to
-reliably record and playback events.     
+An event is a record of occurrence that relects the state of a document,
+process, system,  or object as of a point in time.  Events expressed with a
+standard approach are easier to store and pass between systems.  The RESO
+Distributed Ledger Event Model represents a standard approach that can be used
+to reliably record, playback, and communicate events.     
 
-The Event Model is independent of the underlying distributed ledger system
-being used.  All of the components of the model are easily expressed as JSON
-formatted objects that conform to RFC 8259 and ECMA-404.  
+The Event Model is an application communication standard that is independent of
+the underlying systems on each side.  It is ideal for integrating traditional
+systems with distributed ledgers in a business-to-business (B2B) arrangement.  
+The model can also be used to connect websites with distributed ledgers in a 
+business-to-consumer (B2C) scenario.   
 
-Ten fields are used to represent an Event:
+All of the components of the model are expressed as JSON formatted objects
+conforming to RFC 8259 and ECMA-404.  
+
+There are ten fields that are used to represent an Event:
 
 Field | Responsibility | Scope | Description
 :--- | :--- | :--- | :---
@@ -71,6 +78,39 @@ should pass them unaltered.
 representation.  The set of lookups can change between versions of the standard.
 
 4. Applications are responsible for reconciling records with different versions.
+
+---
+
+## Usage  
+
+The RESO Event Model is a communications format and is not dependent on systems
+that create or consume events.
+
+Events are created by Event Producers and be either traditional systems or 
+distributed ledgers.  After the event is created, it is formatted into the RESO
+Event Model format and transmitted to other applications.
+
+```
+                                                     .---------------.
+                                                     |  Distributed  |
+  .---------------.                            .---->|    Ledger     |
+  |  Distributed  |                            |     '---------------'
+  |    Ledger     |---.                        |     .---------------.
+  '---------------'   |                        |     |      Web      |
+                      |------------------------|---->|  Application  |
+  .---------------.   |       RESO Event       |     '---------------'
+  |  Traditional  |---'          Model         |     .---------------.
+  |    System     |                            |     |  Traditional  |
+  '---------------'                            '---->|    System     |
+                                                     '---------------'
+
+        Event                                              Event
+      Producers                                          Consumers
+```
+Applications that consumer RESO Event Model formatted events are called Event
+Consumers.  An Event Consumer can be a web application, traditional system, or
+a distributed ledger.  
+ 
 
 ---
 
