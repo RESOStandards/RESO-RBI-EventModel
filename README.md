@@ -4,7 +4,7 @@
 ## Request for Comment 
 
 #### Submitted to RESO Distributed Ledger Worgroup by the Real Estate Blockchain Initiative
-#### Version 1.2 - March 2019
+#### Version 1.3 - April 2019
 
 ---
 
@@ -21,9 +21,11 @@
   - [State](#state-lookup)
   - [SubjectType](#subjecttype-lookup)
   - [System](#system-lookup)
+  - [ReferenceType](#referencetype-lookup)
 - [Assigned Fields](#assigned-fields)
   - [Application](#application)
   - [EventSubject](#eventsubject)
+  - [Reference](#reference)
   - [Timestamp](#timestamp)
   - [TransactionId](#transactionid)
   - [Version](#version)
@@ -58,6 +60,8 @@ Field | Responsibility | Scope | Description
 [Entity](#entity-lookup) | Lookup | [Entity Value](#entity-values) | Classification of the what generated the event; the actor.   A person uses a [System](#system-lookup) to record events.
 [Event](#event-lookup) | Lookup | [Event Value](#event-values) | Describes a document, occurrence , or incident.  Typically has associated documentation. Further classified by [State](#state-lookup).
 [State](#state-lookup) | Lookup | [State Value](#state-values) | A verb identifying the occurrence being recorded.  Expressed in terms of the [Event](#event-lookup) argument.
+[ReferenceType](#referencetype-lookup) | Lookup | [ReferenceType Value](#referencetype-values) | Classification of the insformation contained in the  [Reference](#reference) field.
+[Reference](#reference) | Application Supplied | Opaque to the ledger | A value that can be used as a cross reference to tother systems.  The [ReferenceType](#referencetype-lookup) value provides further context.
 [Timestamp](#timestamp) | System Assigned | UTC timestamp | The underlying distributed ledger assigns this field.
 [Version](#version) | System Assigned | Version of this standard | The underlying distributed ledger assigns this field
 [Application](#application) | Application Supplied | Opaque to the ledger | Identifies the application or system used to record the event; the system of record.
@@ -128,13 +132,13 @@ Each record represents an event.  The records have been sorted by the
 [Timestamp](#timestamp) field to present the chronological sequencing of the
 history.  
 
-[TransactionId](#transactionid) | [EventSubject](#eventsubject) | [System](#system-lookup) | [SubjectType](#subjectType-lookup) | [Entity](#entity-lookup) | [Event](#event-lookup) | [State](#state-lookup) | [Timestamp](#timestamp) |[Application](#application) 
-:--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---
-4b46aadd-0f2a-4e79-b3a6-e2e45927d2a2 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Listing | Recorded | Sun, 03 Jun 2018 13:04:05 GMT | 87478-a43
-c7e5a353f-d3b4-2f48-8f02-604bbe507805 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Listing | Changed | Sat, 21 Jul 2018 18:34:22 GMT | 87478-a43
-cd7a53f-d3b4-4e48-845b-604bbe507805 | US-42049-49888-1213666-R-N | Property Marketing Service | Property | Agent | Openhouse | Published | Sun, 19 Aug 2018 12:01:45 GMT | 15435-dd6
-2ad753f4-d3b4-4e47-8402-604bbe7886434 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Offer | Received | Tue, 28 Aug 2018 18:11:22 GMT | 87478-a43
-e27a353f-d3b4-32e8-8629-604bbe237802 | US-42049-49888-1213666-R-N | Transaction Management Service | Property | Broker | Contract | Signed | Wed, 03 Oct 2018 12:011:48 GMT | 438-f32
+[TransactionId](#transactionid) | [EventSubject](#eventsubject) | [System](#system-lookup) | [SubjectType](#subjectType-lookup) | [Entity](#entity-lookup) | [Event](#event-lookup) | [State](#state-lookup) | [ReferenceType](#referencetype-lookup) | [Reference](#reference) | [Timestamp](#timestamp) | [Application](#application) 
+:--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---
+4b46aadd-0f2a-4e79-b3a6-e2e45927d2a2 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Listing | Recorded | None | [NO VALUE] | Sun, 03 Jun 2018 13:04:05 GMT | 87478-a43
+c7e5a353f-d3b4-2f48-8f02-604bbe507805 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Listing | Changed | None | [NO VALUE] | Sat, 21 Jul 2018 18:34:22 GMT | 87478-a43
+cd7a53f-d3b4-4e48-845b-604bbe507805 | US-42049-49888-1213666-R-N | Property Marketing Service | Property | Agent | Openhouse | Published | URI | https://sample_open_house.com?US-42049-49888-1213666-R-N | Sun, 19 Aug 2018 12:01:45 GMT | 15435-dd6
+2ad753f4-d3b4-4e47-8402-604bbe7886434 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Offer | Received | None | [NO VALUE] | Tue, 28 Aug 2018 18:11:22 GMT | 87478-a43
+e27a353f-d3b4-32e8-8629-604bbe237802 | US-42049-49888-1213666-R-N | Transaction Management Service | Property | Broker | Contract | Signed | None | [NO VALUE] | Wed, 03 Oct 2018 12:011:48 GMT | 438-f32
 
 ### Construction project
 
@@ -142,14 +146,14 @@ Each record represents an event.  The records have been sorted by the
 [Timestamp](#timestamp) field to present the chronological sequencing of the
 history.  
 
-[TransactionId](#transactionid) | [EventSubject](#eventsubject) | [System](#system-lookup) | [SubjectType](#subjectType-lookup) | [Entity](#entity-lookup) | [Event](#event-lookup) | [State](#state-lookup) | [Timestamp](#timestamp) |[Application](#application) 
-:--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---
-4b46aadd-0f2a-4e79-b3a6-e2e45927d2a2 | US-42049-49888-1213666-R-N | Tax Assessment System | Tax | County | Assessment | Received | Thu, 14 Jun 2017 13:04:05 GMT | 87478-a43
-c7e5a353f-d3b4-2f48-8f02-604bbe507805 | US-42049-49888-1213666-R-N | Mortgage Industry Service | Loan | Builder | Estimate | Received | Sat, 21 Jul 2018 18:34:22 GMT | 87478-a43
-cd7a53f-d3b4-4e48-845b-604bbe507805 | US-42049-49888-1213666-R-N | Property Recording System | Loan | Builder | Lien  | Placed | Sun, 19 Aug 2018 12:01:45 GMT | 15435-dd6
-2ad753f4-d3b4-4e47-8402-604bbe7886434 | US-42049-49888-1213666-R-N | Manual Input | Loan | Builder | Construction | Completed | Tue, 28 Aug 2018 18:11:22 GMT | 87478-a43
-e27a353f-d3b4-32e8-8629-604bbe237802 | US-42049-49888-1213666-R-N | Property Recording System | Loan | Builder | Lien | Removed | Wed, 03 Oct 2018 12:011:48 GMT | 438-f32
-7646aaef-ec2a-4e79-b5a6-e2e39827d0a5 | US-42049-49888-1213666-R-N | Tax Assessment System | Tax | County | Assessment | Received | Thu, 13 Dec 2018 14:08:23 GMT | 87478-a43
+[TransactionId](#transactionid) | [EventSubject](#eventsubject) | [System](#system-lookup) | [SubjectType](#subjectType-lookup) | [Entity](#entity-lookup) | [Event](#event-lookup) | [State](#state-lookup) | [ReferenceType](#referencetype-lookup) | [Reference](#reference) | [Timestamp](#timestamp) | [Application](#application) 
+:--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---
+4b46aadd-0f2a-4e79-b3a6-e2e45927d2a2 | US-42049-49888-1213666-R-N | Tax Assessment System | Tax | County | Assessment | Received | None | [NO VALUE] | Thu, 14 Jun 2017 13:04:05 GMT | 87478-a43
+c7e5a353f-d3b4-2f48-8f02-604bbe507805 | US-42049-49888-1213666-R-N | Mortgage Industry Service | Loan | Builder | Estimate | Received | None | [NO VALUE] | Sat, 21 Jul 2018 18:34:22 GMT | 87478-a43
+cd7a53f-d3b4-4e48-845b-604bbe507805 | US-42049-49888-1213666-R-N | Property Recording System | Loan | Builder | Lien  | Placed | URI | https://conty_recorder.com?US-42049-49888-1213666-R-N | Sun, 19 Aug 2018 12:01:45 GMT | 15435-dd6
+2ad753f4-d3b4-4e47-8402-604bbe7886434 | US-42049-49888-1213666-R-N | Manual Input | Loan | Builder | Construction | Completed | None | [NO VALUE] | Tue, 28 Aug 2018 18:11:22 GMT | 87478-a43
+e27a353f-d3b4-32e8-8629-604bbe237802 | US-42049-49888-1213666-R-N | Property Recording System | Loan | Builder | Lien | Removed | None | [NO VALUE] | Wed, 03 Oct 2018 12:011:48 GMT | 438-f32
+7646aaef-ec2a-4e79-b5a6-e2e39827d0a5 | US-42049-49888-1213666-R-N | Tax Assessment System | Tax | County | Assessment | Received | None | [NO VALUE] | Thu, 13 Dec 2018 14:08:23 GMT | 87478-a43
 
 ---
 
@@ -261,6 +265,20 @@ identifies what kind of user is creating the record.
 + Transaction Management Service
 + Manual Input
 
+### ReferenceType Lookup
+
+The Reference Lookup classifies the reference for the event.  It is related
+to the [Reference](#reference) field identifying the format to expect in the 
+[Reference](#reference) field.   
+
+The ReferenceType of URI identifies the value in the [Reference](#reference) 
+field as conforming to RFC 3986.  A URI can be a URL or a namespace identifier. 
+
+#### ReferenceType Values
+
++ None 
++ URI 
+
 ---
 
 ## Assigned Fields 
@@ -280,6 +298,14 @@ EventSubject is comprised of alphanumeric digits and hyphens only. Letters are
 not case-sensitive.  This format is compatible with the RESO Universal Property
 Identifier format.  An EventSubject can also represent other RESO values such
 as the Universal Agent Identifier and Universal Organization Identifier.
+
+### Reference 
+
+Reference is comprised of alphanumeric digits and hyphens only. Letters are
+not case-sensitive.  This format of the field is goverened by the
+[ReferenceType](#referencetype-lookup) value.  This field is commonly contains a
+URL that provides more detail information about the event. If there is no 
+reference for the event, the field can be omitted. 
 
 ### Timestamp 
 
