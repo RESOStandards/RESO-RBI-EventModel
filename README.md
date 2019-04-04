@@ -21,11 +21,10 @@
   - [State](#state-lookup)
   - [SubjectType](#subjecttype-lookup)
   - [System](#system-lookup)
-  - [ReferenceType](#referencetype-lookup)
 - [Assigned Fields](#assigned-fields)
   - [Application](#application)
   - [EventSubject](#eventsubject)
-  - [Reference](#reference)
+  - [Recorder](#recorder)
   - [Timestamp](#timestamp)
   - [TransactionId](#transactionid)
   - [Version](#version)
@@ -46,11 +45,6 @@ systems with distributed ledgers in a business-to-business (B2B) arrangement.
 The model can also be used to connect websites with distributed ledgers in a 
 business-to-consumer (B2C) scenario.   
 
-All of the components of the model are expressed as JSON formatted objects
-conforming to RFC 8259 and ECMA-404.  
-
-There are ten fields that are used to represent an Event:
-
 Field | Responsibility | Scope | Description
 :--- | :--- | :--- | :---
 [TransactionId](#transactionid) | System Assigned | Unique within the ledger | A unique identifier created for each recording in an immutable ledger
@@ -60,28 +54,34 @@ Field | Responsibility | Scope | Description
 [Entity](#entity-lookup) | Lookup | [Entity Value](#entity-values) | Classification of the what generated the event; the actor.   A person uses a [System](#system-lookup) to record events.
 [Event](#event-lookup) | Lookup | [Event Value](#event-values) | Describes a document, occurrence , or incident.  Typically has associated documentation. Further classified by [State](#state-lookup).
 [State](#state-lookup) | Lookup | [State Value](#state-values) | A verb identifying the occurrence being recorded.  Expressed in terms of the [Event](#event-lookup) argument.
-[ReferenceType](#referencetype-lookup) | Lookup | [ReferenceType Value](#referencetype-values) | Classification of the insformation contained in the  [Reference](#reference) field.
-[Reference](#reference) | Application Supplied | Opaque to the ledger | A value that can be used as a cross reference to tother systems.  The [ReferenceType](#referencetype-lookup) value provides further context.
+[Recorder](#recorder) | Application Supplied | Opaque to the ledger | An identifier of the entity who is responsible for creating the event. 
 [Timestamp](#timestamp) | System Assigned | UTC timestamp | The underlying distributed ledger assigns this field.
 [Version](#version) | System Assigned | Version of this standard | The underlying distributed ledger assigns this field
 [Application](#application) | Application Supplied | Opaque to the ledger | Identifies the application or system used to record the event; the system of record.
 
 There is a section of this document that describes each of the Lookup types (System, Resource, etc.).
 
+All of the components of the model are expressed as JSON formatted objects
+conforming to RFC 8259 and ECMA-404.  
+
+
 ### Notes
 
-1. System Assigned arguments (TransactionId, Timestamp, and Version) are
-created by the distributed ledger.  They should not proprietary to the
-distributed ledger being used.
+1. System Assigned fields [TransactionId](#transactionid), 
+[Timestamp](#timestamp), and [Version](#version) are created by the distributed
+ledger.  They should not proprietary to the distributed ledger being used.
 
-2. Application Supplied arguments (EventSubject and Application) have meaning
-to the recording application.  The ledger does not operate on these fields and
-should pass them unaltered.
+2. Application Supplied field [EventSubject](#eventsubject) and
+[Application](#application) have meaning to the recording application.  The
+ledger does not operate on these fields and should pass them unaltered.
 
-3. The Version argument governs which verson of the standard is be used for
-representation.  The set of lookups can change between versions of the standard.
+3. The [Version](#version) field governs which version of the standard was used
+when the event was recorded.  The set of lookups can change between versions and
+and  applications are responsible for reconciling records created these 
+differences.
 
-4. Applications are responsible for reconciling records with different versions.
+4. The [Recorder](#recorder) field value can be used to lookup the identity
+of the entity that created the event.
 
 ---
 
@@ -100,7 +100,7 @@ Event Model format and transmitted to other applications.
   .---------------.                            .---->|    Ledger     |
   |  Distributed  |                            |     '---------------'
   |    Ledger     |---.                        |     .---------------.
-  '---------------'   |                        |     |      Web      |
+  '---------------'   |                        |     | Web or Mobile |
                       |------------------------|---->|  Application  |
   .---------------.   |       RESO Event       |     '---------------'
   |  Traditional  |---'          Model         |     .---------------.
@@ -112,8 +112,8 @@ Event Model format and transmitted to other applications.
       Producers                                          Consumers
 ```
 Applications that consumer RESO Event Model formatted events are called Event
-Consumers.  An Event Consumer can be a web application, traditional system, or
-a distributed ledger.  
+Consumers.  An Event Consumer can be a web application, mobile app, traditional
+system, or a distributed ledger.  
  
 
 ---
@@ -130,30 +130,38 @@ examples intended to demonstrate the model.  All of the records use the
 
 Each record represents an event.  The records have been sorted by the
 [Timestamp](#timestamp) field to present the chronological sequencing of the
-history.  
+history. 
 
-[TransactionId](#transactionid) | [EventSubject](#eventsubject) | [System](#system-lookup) | [SubjectType](#subjectType-lookup) | [Entity](#entity-lookup) | [Event](#event-lookup) | [State](#state-lookup) | [ReferenceType](#referencetype-lookup) | [Reference](#reference) | [Timestamp](#timestamp) | [Application](#application) 
-:--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---
-4b46aadd-0f2a-4e79-b3a6-e2e45927d2a2 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Listing | Recorded | None | [NO VALUE] | Sun, 03 Jun 2018 13:04:05 GMT | 87478-a43
-c7e5a353f-d3b4-2f48-8f02-604bbe507805 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Listing | Changed | None | [NO VALUE] | Sat, 21 Jul 2018 18:34:22 GMT | 87478-a43
-cd7a53f-d3b4-4e48-845b-604bbe507805 | US-42049-49888-1213666-R-N | Property Marketing Service | Property | Agent | Openhouse | Published | URI | https://sample_open_house.com?US-42049-49888-1213666-R-N | Sun, 19 Aug 2018 12:01:45 GMT | 15435-dd6
-2ad753f4-d3b4-4e47-8402-604bbe7886434 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Offer | Received | None | [NO VALUE] | Tue, 28 Aug 2018 18:11:22 GMT | 87478-a43
-e27a353f-d3b4-32e8-8629-604bbe237802 | US-42049-49888-1213666-R-N | Transaction Management Service | Property | Broker | Contract | Signed | None | [NO VALUE] | Wed, 03 Oct 2018 12:011:48 GMT | 438-f32
+In this example, all of the events were created by the same entity
+because all of the [Recorder](#recorder) fields have the same value; "ae1643". 
+
+[TransactionId](#transactionid) | [EventSubject](#eventsubject) | [System](#system-lookup) | [SubjectType](#subjectType-lookup) | [Entity](#entity-lookup) | [Event](#event-lookup) | [State](#state-lookup) | [Recorder](#rcorder) | [Timestamp](#timestamp) | [Application](#application) 
+:--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- 
+4b46aadd-0f2a-4e79-b3a6-e2e45927d2a2 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Listing | Recorded | ae1643 | Sun, 03 Jun 2018 13:04:05 GMT | 87478-a43
+c7e5a353f-d3b4-2f48-8f02-604bbe507805 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Listing | Changed | ae1643 | Sat, 21 Jul 2018 18:34:22 GMT | 87478-a43
+cd7a53f-d3b4-4e48-845b-604bbe507805 | US-42049-49888-1213666-R-N | Property Marketing Service | Property | Agent | Openhouse | Published | ae1643 | Sun, 19 Aug 2018 12:01:45 GMT | 15435-dd6
+2ad753f4-d3b4-4e47-8402-604bbe7886434 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Offer | Received | ae1643 | Tue, 28 Aug 2018 18:11:22 GMT | 87478-a43
+e27a353f-d3b4-32e8-8629-604bbe237802 | US-42049-49888-1213666-R-N | Transaction Management Service | Property | Broker | Contract | Signed | ae1643 | Wed, 03 Oct 2018 12:011:48 GMT | 438-f32
 
 ### Construction project
 
 Each record represents an event.  The records have been sorted by the
 [Timestamp](#timestamp) field to present the chronological sequencing of the
-history.  
+history. 
 
-[TransactionId](#transactionid) | [EventSubject](#eventsubject) | [System](#system-lookup) | [SubjectType](#subjectType-lookup) | [Entity](#entity-lookup) | [Event](#event-lookup) | [State](#state-lookup) | [ReferenceType](#referencetype-lookup) | [Reference](#reference) | [Timestamp](#timestamp) | [Application](#application) 
-:--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---
-4b46aadd-0f2a-4e79-b3a6-e2e45927d2a2 | US-42049-49888-1213666-R-N | Tax Assessment System | Tax | County | Assessment | Received | None | [NO VALUE] | Thu, 14 Jun 2017 13:04:05 GMT | 87478-a43
-c7e5a353f-d3b4-2f48-8f02-604bbe507805 | US-42049-49888-1213666-R-N | Mortgage Industry Service | Loan | Builder | Estimate | Received | None | [NO VALUE] | Sat, 21 Jul 2018 18:34:22 GMT | 87478-a43
-cd7a53f-d3b4-4e48-845b-604bbe507805 | US-42049-49888-1213666-R-N | Property Recording System | Loan | Builder | Lien  | Placed | URI | https://conty_recorder.com?US-42049-49888-1213666-R-N | Sun, 19 Aug 2018 12:01:45 GMT | 15435-dd6
-2ad753f4-d3b4-4e47-8402-604bbe7886434 | US-42049-49888-1213666-R-N | Manual Input | Loan | Builder | Construction | Completed | None | [NO VALUE] | Tue, 28 Aug 2018 18:11:22 GMT | 87478-a43
-e27a353f-d3b4-32e8-8629-604bbe237802 | US-42049-49888-1213666-R-N | Property Recording System | Loan | Builder | Lien | Removed | None | [NO VALUE] | Wed, 03 Oct 2018 12:011:48 GMT | 438-f32
-7646aaef-ec2a-4e79-b5a6-e2e39827d0a5 | US-42049-49888-1213666-R-N | Tax Assessment System | Tax | County | Assessment | Received | None | [NO VALUE] | Thu, 13 Dec 2018 14:08:23 GMT | 87478-a43
+In this example, the same entity (cf67de) records events through both a
+Tax Assessment System and Property Recording System.  Different recorders have
+provided events using a Mortgage Industry Service (975fb) and through Manual
+Inout (a4b762). 
+
+[TransactionId](#transactionid) | [EventSubject](#eventsubject) | [System](#system-lookup) | [SubjectType](#subjectType-lookup) | [Entity](#entity-lookup) | [Event](#event-lookup) | [State](#state-lookup) | [Recorder](#recorder) | [Timestamp](#timestamp) | [Application](#application) 
+:--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- 
+4b46aadd-0f2a-4e79-b3a6-e2e45927d2a2 | US-42049-49888-1213666-R-N | Tax Assessment System | Tax | County | Assessment | Received | cf67de | Thu, 14 Jun 2017 13:04:05 GMT | 87478-a43
+c7e5a353f-d3b4-2f48-8f02-604bbe507805 | US-42049-49888-1213666-R-N | Mortgage Industry Service | Loan | Builder | Estimate | Received | 975fb | Sat, 21 Jul 2018 18:34:22 GMT | 87478-a43
+cd7a53f-d3b4-4e48-845b-604bbe507805 | US-42049-49888-1213666-R-N | Property Recording System | Loan | Builder | Lien  | Placed | cf67de | Sun, 19 Aug 2018 12:01:45 GMT | 15435-dd6
+2ad753f4-d3b4-4e47-8402-604bbe7886434 | US-42049-49888-1213666-R-N | Manual Input | Loan | Builder | Construction | Completed | a4b762 | Tue, 28 Aug 2018 18:11:22 GMT | 87478-a43
+e27a353f-d3b4-32e8-8629-604bbe237802 | US-42049-49888-1213666-R-N | Property Recording System | Loan | Builder | Lien | Removed | cf67de | Wed, 03 Oct 2018 12:011:48 GMT | 438-f32
+7646aaef-ec2a-4e79-b5a6-e2e39827d0a5 | US-42049-49888-1213666-R-N | Tax Assessment System | Tax | County | Assessment | Received | cf67de | Thu, 13 Dec 2018 14:08:23 GMT | 87478-a43
 
 ---
 
@@ -265,20 +273,6 @@ identifies what kind of user is creating the record.
 + Transaction Management Service
 + Manual Input
 
-### ReferenceType Lookup
-
-The Reference Lookup classifies the reference for the event.  It is related
-to the [Reference](#reference) field identifying the format to expect in the 
-[Reference](#reference) field.   
-
-The ReferenceType of URI identifies the value in the [Reference](#reference) 
-field as conforming to RFC 3986.  A URI can be a URL or a namespace identifier. 
-
-#### ReferenceType Values
-
-+ None 
-+ URI 
-
 ---
 
 ## Assigned Fields 
@@ -299,13 +293,15 @@ not case-sensitive.  This format is compatible with the RESO Universal Property
 Identifier format.  An EventSubject can also represent other RESO values such
 as the Universal Agent Identifier and Universal Organization Identifier.
 
-### Reference 
+### Recorder 
 
-Reference is comprised of alphanumeric digits and hyphens only. Letters are
-not case-sensitive.  This format of the field is goverened by the
-[ReferenceType](#referencetype-lookup) value.  This field is commonly contains a
-URL that provides more detail information about the event. If there is no 
-reference for the event, the field can be omitted. 
+Recorder is an identifier of the entity that created the event.  It can be an
+individual or company.  An Registry of Recorders can be used to identify the 
+recorder.  Applications can use the registry, along with information from the
+event to find more information anbout the record.  
+
+If the Recorder field value is not present in the Registry of Recorders, then
+there is no eneity that will stnd behind the authenticity of the event.  
 
 ### Timestamp 
 
