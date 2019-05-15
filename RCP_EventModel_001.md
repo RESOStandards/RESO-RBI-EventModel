@@ -3,14 +3,14 @@
 
 ## Request Change Proposal 
 
-**Submitter Name**: Dmitry Goroshevsky 
-**Submitter Organization**: ShelterZoom 
-**Submitter Email**: dmitry@gnup.org
-**Date Submitted**:
+**Submitter Name**: Dmitry Goroshevsky  
+**Submitter Organization**: ShelterZoom  
+**Submitter Email**: dmitry@gnup.org  
 
-**Proposal Number**: 001
-**Status**: Submitted
-***Status Change Date**:
+**Date Submitted**:   
+**Proposal Number**: 001  
+**Status**: Submitted  
+**Status Change Date**:  
 
 ## Synopsis
 
