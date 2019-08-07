@@ -4,7 +4,7 @@
 ## Request Change Proposal 
 
 **Submitter Name**: Ashish Antal    
-**Submitter Organization**:  MLSListings 
+**Submitter Organization**:  MLSListings  
 **Submitter Email**:  aantal@mlslistings.com 
 
 **Date Submitted**:  6/12/2019 
