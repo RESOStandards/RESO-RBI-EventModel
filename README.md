@@ -1,20 +1,20 @@
-
 # RESO Distributed Ledger Event Model
 
-## Request for Comment 
+## Request for Comment
 
 #### Submitted to RESO Distributed Ledger Worgroup by the Real Estate Blockchain Initiative
+
 #### Version 1.3 - April 2019
 
 ---
 
-## Table of Contents  
+## Table of Contents
 
 - [Overview](#overview)
 - [Usage](#usage)
 - [Examples](#examples)
- - [History of a home being sold](#history-of-a-home-being-sold)
- - [Construction project](#construction-project)
+  - [History of a home being sold](#history-of-a-home-being-sold)
+  - [Construction project](#construction-project)
 - [Lookup Fields](#lookups)
   - [Entity](#entity-lookup)
   - [Event](#event-lookup)
@@ -31,7 +31,7 @@
 
 ---
 
-## Overview  
+## Overview
 
 An event is a record of occurrence that relects the state of a document,
 process, system,  or object as of a point in time.  Events expressed with a
@@ -45,47 +45,46 @@ systems with distributed ledgers in a business-to-business (B2B) arrangement.
 The model can also be used to connect websites with distributed ledgers in a 
 business-to-consumer (B2C) scenario.   
 
-Field | Responsibility | Scope | Description
-:--- | :--- | :--- | :---
-[TransactionId](#transactionid) | System Assigned | Unique within the ledger | A unique identifier created for each recording in an immutable ledger
-[EventSubject](#eventsubject) | Application Supplied | Opaque to the ledger | Uniquely identifies the object of the event. e.g. Unique Property Identifier, Unique Agent Identifier, Unique Organization Identifier, etc.
-[System](#system-lookup) | Lookup | [System Value](#system-values) | Classification of the business system generating the event. The type of user is handled by the [Entity](#entity-lookup) lookup.
-[SubjectType](#subjecttype-lookup) | Lookup | [SubjectType Value](#subjecttype-values) | Classification of the object the event is being applied to; the noun.  Related to the EventSubject.
-[Entity](#entity-lookup) | Lookup | [Entity Value](#entity-values) | Classification of the what generated the event; the actor.   A person uses a [System](#system-lookup) to record events.
-[Event](#event-lookup) | Lookup | [Event Value](#event-values) | Describes a document, occurrence , or incident.  Typically has associated documentation. Further classified by [State](#state-lookup).
-[State](#state-lookup) | Lookup | [State Value](#state-values) | A verb identifying the occurrence being recorded.  Expressed in terms of the [Event](#event-lookup) argument.
-[Recorder](#recorder) | Application Supplied | Opaque to the ledger | An identifier of the entity who is responsible for creating the event. 
-[Timestamp](#timestamp) | System Assigned | UTC timestamp | The underlying distributed ledger assigns this field.
-[Version](#version) | System Assigned | Version of this standard | The underlying distributed ledger assigns this field
-[Application](#application) | Application Supplied | Opaque to the ledger | Identifies the application or system used to record the event; the system of record.
+| Field                              | Responsibility       | Scope                                    | Description                                                                                                                                 |
+|:---------------------------------- |:-------------------- |:---------------------------------------- |:------------------------------------------------------------------------------------------------------------------------------------------- |
+| [TransactionId](#transactionid)    | System Assigned      | Unique within the ledger                 | A unique identifier created for each recording in an immutable ledger                                                                       |
+| [EventSubject](#eventsubject)      | Application Supplied | Opaque to the ledger                     | Uniquely identifies the object of the event. e.g. Unique Property Identifier, Unique Agent Identifier, Unique Organization Identifier, etc. |
+| [System](#system-lookup)           | Lookup               | [System Value](#system-values)           | Classification of the business system generating the event. The type of user is handled by the [Entity](#entity-lookup) lookup.             |
+| [SubjectType](#subjecttype-lookup) | Lookup               | [SubjectType Value](#subjecttype-values) | Classification of the object the event is being applied to; the noun.  Related to the EventSubject.                                         |
+| [Entity](#entity-lookup)           | Lookup               | [Entity Value](#entity-values)           | Classification of the what generated the event; the actor.   A person uses a [System](#system-lookup) to record events.                     |
+| [Event](#event-lookup)             | Lookup               | [Event Value](#event-values)             | Describes a document, occurrence , or incident.  Typically has associated documentation. Further classified by [State](#state-lookup).      |
+| [State](#state-lookup)             | Lookup               | [State Value](#state-values)             | A verb identifying the occurrence being recorded.  Expressed in terms of the [Event](#event-lookup) argument.                               |
+| [Recorder](#recorder)              | Application Supplied | Opaque to the ledger                     | An identifier of the entity who is responsible for creating the event.                                                                      |
+| [Timestamp](#timestamp)            | System Assigned      | UTC timestamp                            | The underlying distributed ledger assigns this field.                                                                                       |
+| [Version](#version)                | System Assigned      | Version of this standard                 | The underlying distributed ledger assigns this field                                                                                        |
+| [Application](#application)        | Application Supplied | Opaque to the ledger                     | Identifies the application or system used to record the event; the system of record.                                                        |
 
 There is a section of this document that describes each of the Lookup types (System, Resource, etc.).
 
 All of the components of the model are expressed as JSON formatted objects
 conforming to RFC 8259 and ECMA-404.  
 
-
 ### Notes
 
 1. System Assigned fields [TransactionId](#transactionid), 
-[Timestamp](#timestamp), and [Version](#version) are created by the distributed
-ledger.  They should not proprietary to the distributed ledger being used.
+   [Timestamp](#timestamp), and [Version](#version) are created by the distributed
+   ledger.  They should not proprietary to the distributed ledger being used.
 
 2. Application Supplied field [EventSubject](#eventsubject) and
-[Application](#application) have meaning to the recording application.  The
-ledger does not operate on these fields and should pass them unaltered.
+   [Application](#application) have meaning to the recording application.  The
+   ledger does not operate on these fields and should pass them unaltered.
 
 3. The [Version](#version) field governs which version of the standard was used
-when the event was recorded.  The set of lookups can change between versions and
-and  applications are responsible for reconciling records created these 
-differences.
+   when the event was recorded.  The set of lookups can change between versions and
+   and  applications are responsible for reconciling records created these 
+   differences.
 
 4. The [Recorder](#recorder) field value can be used to lookup the identity
-of the entity that created the event.
+   of the entity that created the event.
 
 ---
 
-## Usage  
+## Usage
 
 The RESO Event Model is a communications format and is not dependent on systems
 that create or consume events.
@@ -111,10 +110,10 @@ Event Model format and transmitted to other applications.
         Event                                              Event
       Producers                                          Consumers
 ```
+
 Applications that consumer RESO Event Model formatted events are called Event
 Consumers.  An Event Consumer can be a web application, mobile app, traditional
 system, or a distributed ledger.  
- 
 
 ---
 
@@ -125,7 +124,6 @@ examples intended to demonstrate the model.  All of the records use the
 [EventSubject](#eventsubject) field to represent the same property; RESO UPI
 (US-42049-49888-1213666-R-N).
 
-
 ### History of a home being sold
 
 Each record represents an event.  The records have been sorted by the
@@ -135,13 +133,13 @@ history.
 In this example, all of the events were created by the same entity
 because all of the [Recorder](#recorder) fields have the same value; "ae1643". 
 
-[TransactionId](#transactionid) | [EventSubject](#eventsubject) | [System](#system-lookup) | [SubjectType](#subjectType-lookup) | [Entity](#entity-lookup) | [Event](#event-lookup) | [State](#state-lookup) | [Recorder](#rcorder) | [Timestamp](#timestamp) | [Application](#application) 
-:--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- 
-4b46aadd-0f2a-4e79-b3a6-e2e45927d2a2 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Listing | Recorded | ae1643 | Sun, 03 Jun 2018 13:04:05 GMT | 87478-a43
-c7e5a353f-d3b4-2f48-8f02-604bbe507805 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Listing | Changed | ae1643 | Sat, 21 Jul 2018 18:34:22 GMT | 87478-a43
-cd7a53f-d3b4-4e48-845b-604bbe507805 | US-42049-49888-1213666-R-N | Property Marketing Service | Property | Agent | Openhouse | Published | ae1643 | Sun, 19 Aug 2018 12:01:45 GMT | 15435-dd6
-2ad753f4-d3b4-4e47-8402-604bbe7886434 | US-42049-49888-1213666-R-N | Property Listing Service | Property | Broker | Offer | Received | ae1643 | Tue, 28 Aug 2018 18:11:22 GMT | 87478-a43
-e27a353f-d3b4-32e8-8629-604bbe237802 | US-42049-49888-1213666-R-N | Transaction Management Service | Property | Broker | Contract | Signed | ae1643 | Wed, 03 Oct 2018 12:011:48 GMT | 438-f32
+| [TransactionId](#transactionid)       | [EventSubject](#eventsubject) | [System](#system-lookup)       | [SubjectType](#subjectType-lookup) | [Entity](#entity-lookup) | [Event](#event-lookup) | [State](#state-lookup) | [Recorder](#rcorder) | [Timestamp](#timestamp)        | [Application](#application) |
+|:------------------------------------- |:----------------------------- |:------------------------------ |:---------------------------------- |:------------------------ |:---------------------- |:---------------------- |:-------------------- |:------------------------------ |:--------------------------- |
+| 4b46aadd-0f2a-4e79-b3a6-e2e45927d2a2  | US-42049-49888-1213666-R-N    | Property Listing Service       | Property                           | Broker                   | Listing                | Recorded               | ae1643               | Sun, 03 Jun 2018 13:04:05 GMT  | 87478-a43                   |
+| c7e5a353f-d3b4-2f48-8f02-604bbe507805 | US-42049-49888-1213666-R-N    | Property Listing Service       | Property                           | Broker                   | Listing                | Changed                | ae1643               | Sat, 21 Jul 2018 18:34:22 GMT  | 87478-a43                   |
+| cd7a53f-d3b4-4e48-845b-604bbe507805   | US-42049-49888-1213666-R-N    | Property Marketing Service     | Property                           | Agent                    | Openhouse              | Published              | ae1643               | Sun, 19 Aug 2018 12:01:45 GMT  | 15435-dd6                   |
+| 2ad753f4-d3b4-4e47-8402-604bbe7886434 | US-42049-49888-1213666-R-N    | Property Listing Service       | Property                           | Broker                   | Offer                  | Received               | ae1643               | Tue, 28 Aug 2018 18:11:22 GMT  | 87478-a43                   |
+| e27a353f-d3b4-32e8-8629-604bbe237802  | US-42049-49888-1213666-R-N    | Transaction Management Service | Property                           | Broker                   | Contract               | Signed                 | ae1643               | Wed, 03 Oct 2018 12:011:48 GMT | 438-f32                     |
 
 ### Construction project
 
@@ -154,18 +152,18 @@ Tax Assessment System and Property Recording System.  Different recorders have
 provided events using a Mortgage Industry Service (975fb) and through Manual
 Inout (a4b762). 
 
-[TransactionId](#transactionid) | [EventSubject](#eventsubject) | [System](#system-lookup) | [SubjectType](#subjectType-lookup) | [Entity](#entity-lookup) | [Event](#event-lookup) | [State](#state-lookup) | [Recorder](#recorder) | [Timestamp](#timestamp) | [Application](#application) 
-:--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- 
-4b46aadd-0f2a-4e79-b3a6-e2e45927d2a2 | US-42049-49888-1213666-R-N | Tax Assessment System | Tax | County | Assessment | Received | cf67de | Thu, 14 Jun 2017 13:04:05 GMT | 87478-a43
-c7e5a353f-d3b4-2f48-8f02-604bbe507805 | US-42049-49888-1213666-R-N | Mortgage Industry Service | Loan | Builder | Estimate | Received | 975fb | Sat, 21 Jul 2018 18:34:22 GMT | 87478-a43
-cd7a53f-d3b4-4e48-845b-604bbe507805 | US-42049-49888-1213666-R-N | Property Recording System | Loan | Builder | Lien  | Placed | cf67de | Sun, 19 Aug 2018 12:01:45 GMT | 15435-dd6
-2ad753f4-d3b4-4e47-8402-604bbe7886434 | US-42049-49888-1213666-R-N | Manual Input | Loan | Builder | Construction | Completed | a4b762 | Tue, 28 Aug 2018 18:11:22 GMT | 87478-a43
-e27a353f-d3b4-32e8-8629-604bbe237802 | US-42049-49888-1213666-R-N | Property Recording System | Loan | Builder | Lien | Removed | cf67de | Wed, 03 Oct 2018 12:011:48 GMT | 438-f32
-7646aaef-ec2a-4e79-b5a6-e2e39827d0a5 | US-42049-49888-1213666-R-N | Tax Assessment System | Tax | County | Assessment | Received | cf67de | Thu, 13 Dec 2018 14:08:23 GMT | 87478-a43
+| [TransactionId](#transactionid)       | [EventSubject](#eventsubject) | [System](#system-lookup)  | [SubjectType](#subjectType-lookup) | [Entity](#entity-lookup) | [Event](#event-lookup) | [State](#state-lookup) | [Recorder](#recorder) | [Timestamp](#timestamp)        | [Application](#application) |
+|:------------------------------------- |:----------------------------- |:------------------------- |:---------------------------------- |:------------------------ |:---------------------- |:---------------------- |:--------------------- |:------------------------------ |:--------------------------- |
+| 4b46aadd-0f2a-4e79-b3a6-e2e45927d2a2  | US-42049-49888-1213666-R-N    | Tax Assessment System     | Tax                                | County                   | Assessment             | Received               | cf67de                | Thu, 14 Jun 2017 13:04:05 GMT  | 87478-a43                   |
+| c7e5a353f-d3b4-2f48-8f02-604bbe507805 | US-42049-49888-1213666-R-N    | Mortgage Industry Service | Loan                               | Builder                  | Estimate               | Received               | 975fb                 | Sat, 21 Jul 2018 18:34:22 GMT  | 87478-a43                   |
+| cd7a53f-d3b4-4e48-845b-604bbe507805   | US-42049-49888-1213666-R-N    | Property Recording System | Loan                               | Builder                  | Lien                   | Placed                 | cf67de                | Sun, 19 Aug 2018 12:01:45 GMT  | 15435-dd6                   |
+| 2ad753f4-d3b4-4e47-8402-604bbe7886434 | US-42049-49888-1213666-R-N    | Manual Input              | Loan                               | Builder                  | Construction           | Completed              | a4b762                | Tue, 28 Aug 2018 18:11:22 GMT  | 87478-a43                   |
+| e27a353f-d3b4-32e8-8629-604bbe237802  | US-42049-49888-1213666-R-N    | Property Recording System | Loan                               | Builder                  | Lien                   | Removed                | cf67de                | Wed, 03 Oct 2018 12:011:48 GMT | 438-f32                     |
+| 7646aaef-ec2a-4e79-b5a6-e2e39827d0a5  | US-42049-49888-1213666-R-N    | Tax Assessment System     | Tax                                | County                   | Assessment             | Received               | cf67de                | Thu, 13 Dec 2018 14:08:23 GMT  | 87478-a43                   |
 
 ---
 
-## Lookup Fields 
+## Lookup Fields
 
 Lookups are used to avoid freeform text in event fields.  Users are typically
 presented the options for these fields as drop-downs. Lookup values are not
@@ -275,25 +273,25 @@ identifies what kind of user is creating the record.
 
 ---
 
-## Assigned Fields 
+## Assigned Fields
 
 Assigned event fields contain freeform text.  These fields are assigned by
 applications.
 
-### Application 
+### Application
 
 EventSubject is comprised of alphanumeric digits and hyphens only. Letters are
 not case-sensitive.  Identifies the application or system used to record the
 event.  It represents the system of record.
 
-### EventSubject 
+### EventSubject
 
 EventSubject is comprised of alphanumeric digits and hyphens only. Letters are
 not case-sensitive.  This format is compatible with the RESO Universal Property
 Identifier format.  An EventSubject can also represent other RESO values such
 as the Universal Agent Identifier and Universal Organization Identifier.
 
-### Recorder 
+### Recorder
 
 Recorder is an identifier of the entity that created the event.  It can be an
 individual or company.  An Registry of Recorders can be used to identify the 
@@ -303,17 +301,17 @@ event to find more information anbout the record.
 If the Recorder field value is not present in the Registry of Recorders, then
 there is no eneity that will stnd behind the authenticity of the event.  
 
-### Timestamp 
+### Timestamp
 
 The underlying distributed ledger assigns this field and it should represent
 UTC time.
 
-### TransactionId 
+### TransactionId
 
 A unique identifier created by the ledger for each recording.  The value should
 be independent of the distribbuted ledger.
 
-### Version 
+### Version
 
 Version represent which verson of the standard is be used for the event.  The
 set of lookups can change between versions of the standard and applications are
